@@ -56,8 +56,8 @@ _TEMPLATES: dict[str, dict[str, object]] = {
 }
 
 _FALLBACK = {
-    "missing_points": ["完成请求所必需但当前尚未明确的条件"],
-    "question": "为了继续处理，请补充决定本请求所必需的关键条件或规则。",
+    "missing_points": ["处理对象、触发条件或预期操作中尚未明确的部分"],
+    "question": "请指出希望系统在什么情况下，对哪个对象执行什么操作；如果缺的是参数，请给出取值或范围。",
 }
 
 

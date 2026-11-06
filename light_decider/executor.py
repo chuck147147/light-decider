@@ -477,6 +477,7 @@ def run_execution(
     output_fn: OutputFunction = print,
     thread_store: JsonlThreadStore | None = None,
     answer_worker: AnswerWorker | None = None,
+    question_worker: AnswerWorker | None = None,
     codex_dispatcher: CodexDispatcher | None = None,
     thread_id: str | None = None,
     max_clarification_rounds: int = 2,
@@ -536,6 +537,18 @@ def run_execution(
 
     for round_number in range(1, max_clarification_rounds + 1):
         question_package = build_question_package(route_result, current_request)
+        if question_package.get("template_reason") == "generic_clarification" and question_worker is not None:
+            try:
+                generated_question = question_worker.clarification_question(current_request, safe_context)
+                question_package["question"] = generated_question["question"]
+                question_package["missing_points"] = generated_question["missing_points"]
+                question_package["template_reason"] = "local_model_targeted_clarification"
+            except AnswerWorkerFailure as error:
+                question_package["question"] = (
+                    "我还无法从当前请求中确定具体缺项。请直接指出尚未决定的行为、参数或候选方案。"
+                )
+                question_package["missing_points"] = ["本地模型未能识别具体缺项"]
+                question_package["generation_error"] = str(error)
         thread["status"] = "awaiting_user"
         thread["pending_question"] = question_package
         thread["current_action"] = "clarify"
@@ -691,6 +704,42 @@ def _interactive_context() -> list[dict[str, str]] | None:
         return None
 
 
+def _cli_progress_output(message: str) -> None:
+    """Print only interaction that must happen before execution completes."""
+    if message.startswith(("需要补充：", "Codex handoff payload：")):
+        print(message)
+
+
+def _print_cli_result(thread: Mapping[str, Any]) -> None:
+    route_result = thread.get("final_route_result")
+    if not isinstance(route_result, Mapping):
+        history = thread.get("route_history") or []
+        route_result = history[-1] if history and isinstance(history[-1], Mapping) else {}
+    action = route_result.get("action") or thread.get("current_action") or "unknown"
+    print(f"判断：{action}")
+
+    status = thread.get("status")
+    if status == "routed_to_human":
+        output = "转人工"
+    elif status == "aborted_by_user":
+        output = "已中止澄清回路。"
+    elif status == "answer_failed":
+        output = "本地模型不可用，已转人工"
+    else:
+        output = thread.get("final_output")
+
+    if output is None:
+        package = thread.get("execution_package") or {}
+        if str(action).startswith("codex") and package.get("type") == "codex_handoff":
+            output = _payload_as_prompt(package.get("payload"))
+        elif thread.get("dry_run"):
+            output = "dry-run：未执行。"
+
+    if output is not None:
+        print("输出：")
+        print(output)
+
+
 def main(argv: Sequence[str] | None = None) -> None:
     import argparse
     import sys
@@ -727,23 +776,21 @@ def main(argv: Sequence[str] | None = None) -> None:
         parser.error(str(error))
 
     store = JsonlThreadStore(args.thread_log)
-    print(f"已加载模型：{args.model.name}")
-    answer_worker = AnswerWorker() if args.execute else None
+    question_worker = AnswerWorker()
+    answer_worker = question_worker if args.execute else None
     codex_dispatcher = CodexDispatcher() if args.execute else None
-    if args.execute:
-        print("执行层已启用：decide 使用本地 Answer Worker；Codex 仅在打印 payload 并取得 y 确认后调用。")
-    else:
-        print("执行层 dry-run 已启用；不会调用 Codex 或自动派发。")
     if args.text is not None:
         thread = run_execution(
             args.text,
             context,
             route_request,
+            output_fn=_cli_progress_output,
             thread_store=store,
             answer_worker=answer_worker,
+            question_worker=question_worker,
             codex_dispatcher=codex_dispatcher,
         )
-        print(json.dumps(thread, ensure_ascii=False, indent=2))
+        _print_cli_result(thread)
         return
 
     print("输入 /exit 结束。")
@@ -765,11 +812,13 @@ def main(argv: Sequence[str] | None = None) -> None:
             request,
             context,
             route_request,
+            output_fn=_cli_progress_output,
             thread_store=store,
             answer_worker=answer_worker,
+            question_worker=question_worker,
             codex_dispatcher=codex_dispatcher,
         )
-        print(json.dumps(thread, ensure_ascii=False, indent=2))
+        _print_cli_result(thread)
 
 
 if __name__ == "__main__":

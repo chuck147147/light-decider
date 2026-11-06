@@ -42,7 +42,7 @@ stateDiagram-v2
 
 每个新请求创建一个 `thread_id`。同一线程的 JSONL 快照会原位更新，完整澄清历史按轮次追加到 `clarification_rounds`；`clarification_round` 同时保存最近一轮 `{question, answer}`。每项历史还保留增强请求和重路由结果。最多两轮；空答复或 `quit` 中止，第二轮仍为 clarify 则熔断转人工。decide 在 `--execute` 下把回答正文保存到 `final_output` 并打印；Codex handoff 在用户确认后才执行，结果写入同一 thread。
 
-追问来自 `light_decider.question`：优先采用路由输出附带的问题包；否则按策略给出的 reason 选择缺失点模板，最后使用通用模板兜底。
+追问来自 `light_decider.question`：优先采用路由输出附带的问题包；否则按策略给出的 reason 选择缺失点模板。若模型只判定 `clarify`、没有指出具体缺项，执行层会调用本地 Ollama 模型，结合原请求和已有上下文生成针对性追问，并把识别出的缺失点写入 thread。生成失败时使用说明对象、触发条件、预期操作或参数范围的降级问题。
 
 ## 使用
 

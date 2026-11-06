@@ -11,6 +11,12 @@ from typing import Any
 
 
 SYSTEM_PROMPT = "直接回答用户的问题，不提路由、不解释自己是执行层。"
+CLARIFICATION_SYSTEM_PROMPT = (
+    "你负责把含糊请求转成具体、可回答的澄清问题。根据用户原请求和已有上下文，找出继续处理前真正缺失的信息。"
+    "只输出 JSON：{\"missing_points\":[\"具体缺项\"],\"question\":\"直接询问这些缺项的问题\"}。"
+    "问题必须点名缺少的参数、对象、规则或选项；若有明确候选项就列出。最多两句。"
+    "禁止泛泛要求用户补充关键条件、规则或背景；不要重复已明确的信息，不要猜测、代选或回答原请求。"
+)
 DEFAULT_BASE_URL = "http://localhost:11434/v1"
 DEFAULT_MODEL = "qwen2.5:7b-instruct"
 DEFAULT_TIMEOUT_SECONDS = 120
@@ -51,11 +57,16 @@ class AnswerWorker:
             path = path[: -len("/v1/chat/completions")]
         return urlunsplit((parts.scheme, parts.netloc, f"{path}/api/chat", "", ""))
 
-    def _request_once(self, request_text: str) -> tuple[str, dict[str, int | None] | None]:
+    def _request_once(
+        self,
+        request_text: str,
+        *,
+        system_prompt: str = SYSTEM_PROMPT,
+    ) -> tuple[str, dict[str, int | None] | None]:
         body = {
             "model": self.model,
             "messages": [
-                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "system", "content": system_prompt},
                 {"role": "user", "content": request_text},
             ],
             "stream": False,
@@ -122,6 +133,64 @@ class AnswerWorker:
             attempts=2,
             elapsed_seconds=elapsed,
         )
+
+    def clarification_question(
+        self,
+        request_text: str,
+        context: list[dict[str, str]] | None = None,
+    ) -> dict[str, Any]:
+        user_prompt = json.dumps(
+            {"request": request_text, "context": context or []},
+            ensure_ascii=False,
+        )
+        started = time.perf_counter()
+        errors: list[str] = []
+        with _SERIAL_REQUEST_LOCK:
+            for attempt in range(1, 3):
+                try:
+                    content, usage = self._request_once(
+                        user_prompt,
+                        system_prompt=CLARIFICATION_SYSTEM_PROMPT,
+                    )
+                    missing_points, question = _parse_clarification_question(content)
+                    return {
+                        "model": self.model,
+                        "elapsed_seconds": round(time.perf_counter() - started, 3),
+                        "question": question,
+                        "missing_points": missing_points,
+                        "usage": usage,
+                        "attempts": attempt,
+                    }
+                except Exception as error:
+                    errors.append(f"第 {attempt} 次：{error}")
+        elapsed = round(time.perf_counter() - started, 3)
+        raise AnswerWorkerFailure(
+            "澄清问题生成失败，已达到最多两次尝试；" + "；".join(errors),
+            model=self.model,
+            attempts=2,
+            elapsed_seconds=elapsed,
+        )
+
+
+def _parse_clarification_question(content: str) -> tuple[list[str], str]:
+    try:
+        payload = json.loads(content)
+    except json.JSONDecodeError:
+        payload = None
+    if isinstance(payload, dict):
+        raw_points = payload.get("missing_points", [])
+        points = (
+            [item.strip() for item in raw_points if isinstance(item, str) and item.strip()]
+            if isinstance(raw_points, list)
+            else []
+        )
+        question = payload.get("question")
+        if isinstance(question, str) and question.strip():
+            return points, question.strip()
+    question = content.strip()
+    if not question:
+        raise ValueError("模型没有返回澄清问题。")
+    return [], question
 
 
 def _optional_int(value: object) -> int | None:
