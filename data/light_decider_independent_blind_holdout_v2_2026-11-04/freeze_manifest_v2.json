@@ -1,0 +1,100 @@
+{
+  "dataset": "light_decider_independent_blind_holdout_v2",
+  "freeze_date": "2026-11-04",
+  "timezone": "Asia/Shanghai",
+  "status": "frozen_unlabeled_synthetic_holdout",
+  "records": 24,
+  "sample_ids": [
+    "blind-v2-001",
+    "blind-v2-002",
+    "blind-v2-003",
+    "blind-v2-004",
+    "blind-v2-005",
+    "blind-v2-006",
+    "blind-v2-007",
+    "blind-v2-008",
+    "blind-v2-009",
+    "blind-v2-010",
+    "blind-v2-011",
+    "blind-v2-012",
+    "blind-v2-013",
+    "blind-v2-014",
+    "blind-v2-015",
+    "blind-v2-016",
+    "blind-v2-017",
+    "blind-v2-018",
+    "blind-v2-019",
+    "blind-v2-020",
+    "blind-v2-021",
+    "blind-v2-022",
+    "blind-v2-023",
+    "blind-v2-024"
+  ],
+  "source": "synthetic_generated_not_human_confirmed",
+  "labels_or_answer_key_present": false,
+  "annotation_columns": [
+    "缺失关键规格",
+    "存在安全默认",
+    "高危域",
+    "最终动作",
+    "备注"
+  ],
+  "annotation_cells": 120,
+  "annotation_cells_filled": 0,
+  "xlsx_read_only": true,
+  "question_file": {
+    "path": "blind_holdout_v2_unlabeled.xlsx",
+    "sha256": "64540d63b22aa9a1c833e2fcd51231dc0b972e287db2d5fb14243baa7e6d6729",
+    "bytes": 10024
+  },
+  "construction_snapshot_sha256": "59c60a62a626eaa3f4dc69ff2ff9cf3c2f2e5bacc30e3d02f7e9f2029594075d",
+  "independence_audit": {
+    "reference_rows": 667,
+    "reference_sources": {
+      "train": 516,
+      "dev": 127,
+      "v1_input_texts": 24
+    },
+    "normalized_exact_duplicates": 0,
+    "max_external_char_tfidf_cosine": 0.08968554,
+    "external_similarity_alert_threshold": 0.12,
+    "top_3_neighbors_manually_reviewed_per_item": true,
+    "max_internal_char_tfidf_cosine": 0.05449933,
+    "max_internal_similarity_pair": [
+      "blind-v2-005",
+      "blind-v2-007"
+    ],
+    "similarity_method": "character TF-IDF ngrams 2-5; whitespace-normalized casefold exact check"
+  },
+  "coverage_counts_non_labeling": {
+    "纯技术提问（含实现术语）": 4,
+    "规格齐全的实现请求": 8,
+    "缺关键规格且无安全默认": 7,
+    "高危域缺规格": 4,
+    "缺规格但由用户授权安全默认": 3,
+    "依赖现有项目约定": 2,
+    "实现请求采用问句形式（定向压力题）": 6
+  },
+  "high_risk_domain_coverage": {
+    "payment": 1,
+    "permission": 1,
+    "rate_limiting": 1,
+    "locale_sensitive_parsing": 1
+  },
+  "protection_checks": {
+    "v1_frozen_gold_sha256": "f5b572f313921a14ff7820ea8188af7a7366226ba6a5a7ad83153fae666c0b12",
+    "v1_freeze_manifest_sha256": "f5b572f313921a14ff7820ea8188af7a7366226ba6a5a7ad83153fae666c0b12",
+    "training_dataset_version_sha256": "897d1266b0f2a1d7177d57150360c81c11dea70b900f5ab412bd2ea048f1cb16",
+    "train_sha256": "c05e18aaa2f393093a7879ffa43b3b0063e20e4edb553b8a12422b271242c3ab",
+    "dev_sha256": "cf03fa1583713dff2a600b5df941dc0b6c358fc4bc375ef066f45fc5f77eec82",
+    "model_sha256": "f2e1dc659d1d9a78c3136401ba2d987e80bd836a85005530bf75e53510d2dc25",
+    "routing_policy_sha256": "e1a1107aaf29ff75482ae1ab581d9f233c19d7763bef5ceb868bd468b48e5ae3",
+    "automatic_dispatch_allowed": false
+  },
+  "use_restriction_until_user_blind_labels_complete": [
+    "not_for_training",
+    "not_for_model_tuning",
+    "not_for_routing_policy_changes",
+    "not_for_evaluation"
+  ]
+}

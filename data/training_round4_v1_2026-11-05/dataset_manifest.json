@@ -1,0 +1,89 @@
+{
+  "dataset_version": "light_decider_round4_v1_2026-11-05",
+  "dataset_version_sha256": "188df8387e8f2e24d0844f37a53b82e5918b6e5a2b875ff5ce036ee8bb56ee9d",
+  "source_round2_dataset_version_sha256": "897d1266b0f2a1d7177d57150360c81c11dea70b900f5ab412bd2ea048f1cb16",
+  "input_sha256": {
+    "data/training_round2_v1_2026-11-04/train.jsonl": "c05e18aaa2f393093a7879ffa43b3b0063e20e4edb553b8a12422b271242c3ab",
+    "data/training_round2_v1_2026-11-04/dev.jsonl": "cf03fa1583713dff2a600b5df941dc0b6c358fc4bc375ef066f45fc5f77eec82",
+    "artifacts/decisioner_round2_v1_2026-11-04.joblib": "f2e1dc659d1d9a78c3136401ba2d987e80bd836a85005530bf75e53510d2dc25",
+    "outputs/01a195cc-5dff-7e70-9e28-5298d354d8cf/decide_boundary_candidates.xlsx": "def43b94f69233164314b9acf8d74ffb1c3a4dad86b5c4d7cbee27c305561d7a",
+    "light_decider/routing_policy.py": "719f88ed53635d8b69f35e52e00741b9d9b81128d7f72d99f176ddfe9902e86e",
+    "data/light_decider_independent_blind_holdout_v1.csv": "9d065f614126c82b0edd8e149c30b4b641e2748f12ab6c9d86db073036eef41b",
+    "data/frozen_2026-11-03/light_decider_independent_blind_holdout_v1_human_labels_frozen_2026-11-03.jsonl": "f5b572f313921a14ff7820ea8188af7a7366226ba6a5a7ad83153fae666c0b12",
+    "data/light_decider_independent_blind_holdout_v2_2026-11-04/blind_holdout_v2_user_labels_frozen_2026-11-04.xlsx": "5f0cc3bacb9d84c34cf5ef7317034552d6c04915321603e9156af523f7f20b4f",
+    "work/rare_class_candidates_build_2026-11-04/round3_source_rows/v2_frozen_raw.json": "8ec0426cee588fc824a892c71f460109ebccb1555396c6aaf1856d39308ac013",
+    "data/light_decider_independent_blind_holdout_v3_2026-11-04/blind_holdout_v3_labels_frozen.jsonl": "1b28daf61866153cda78fb6f7060ed084659f73b7ef1efd128e5f53dd0d1e07b",
+    "data/light_decider_independent_blind_holdout_v4_2026-11-05/blind_holdout_v4_labels_frozen.jsonl": "02ca2168736c978bb077f7490c46002a74ed735b96199f93c6709ffc0f1366e1"
+  },
+  "train_rows": 576,
+  "dev_rows": 127,
+  "new_confirmed_rows": 60,
+  "new_train_label_counts": {
+    "decide": 226,
+    "clarify": 180,
+    "codex": 170
+  },
+  "new_train_five_class_counts": {
+    "decide": 226,
+    "clarify": 180,
+    "codex": 160,
+    "codex+check_first": 2,
+    "codex+declare_default": 8
+  },
+  "confirmation_source": "human_confirmed_2026-11-05",
+  "reviewed_new_rows": true,
+  "dev_copied_byte_for_byte": true,
+  "round2_dev_expected_sha256": "cf03fa1583713dff2a600b5df941dc0b6c358fc4bc375ef066f45fc5f77eec82",
+  "new_candidate_dev_family_overlap": 0,
+  "train_dev_scenario_family_overlap": 0,
+  "candidate_ids_unique": true,
+  "rare_class_188_included": false,
+  "candidate_workbook_sha256": "def43b94f69233164314b9acf8d74ffb1c3a4dad86b5c4d7cbee27c305561d7a",
+  "round2_model_sha256": "f2e1dc659d1d9a78c3136401ba2d987e80bd836a85005530bf75e53510d2dc25",
+  "model_path": "artifacts/decisioner_round4_v1_2026-11-05.joblib",
+  "model_sha256": "6eff1a818db972bf887ed885f1cad4162dc5cef69ebdee0fb4f7ac32c37b286b",
+  "active_policy": "v3.1",
+  "active_policy_sha256": "719f88ed53635d8b69f35e52e00741b9d9b81128d7f72d99f176ddfe9902e86e",
+  "automatic_dispatch_allowed": false,
+  "frozen_labels_used_for_training": false,
+  "domain_dev_gate_passed": true,
+  "domain_clarify_to_decide": 0,
+  "seen96_reference_only": true,
+  "single_locked_configuration": {
+    "vectorizer": "char TF-IDF 1-4 gram, max_features=80000, sublinear_tf=true",
+    "classifier": "LogisticRegression max_iter=1000 random_state=42",
+    "class_weights": {
+      "decide": 1.0,
+      "clarify": 1.5,
+      "codex": 1.0
+    },
+    "legacy_cleaned_sharc_sample_weight": 0.3,
+    "all_other_sample_weight": 1.0
+  },
+  "files": {
+    "train.jsonl": {
+      "rows": 576,
+      "sha256": "ba7e6c362f9501aeacfcd471e5ce6b4a8cf0bd8077260fe459dccaa45fa2753f"
+    },
+    "dev.jsonl": {
+      "rows": 127,
+      "sha256": "cf03fa1583713dff2a600b5df941dc0b6c358fc4bc375ef066f45fc5f77eec82"
+    },
+    "confirmed_additions.jsonl": {
+      "rows": 60,
+      "sha256": "26d5fccf8c64cfe339cb66270cf1d0a3f470dbdda48f9d4e7dc1496024332ca9"
+    },
+    "dev_predictions.jsonl": {
+      "rows": 127,
+      "sha256": "5a26b81c71f2733a0fef4675e1271ec48c1d5b6ffb829c5b4e91360fdaaff673"
+    },
+    "reference_predictions_seen96.jsonl": {
+      "rows": 96,
+      "sha256": "f75d120ca180c0dbf66174829a730bd68f4ccb85a2bceea8a4dd4744f2303873"
+    },
+    "round4_training_report.md": {
+      "rows": null,
+      "sha256": "1824eaa49b98764c9398db433470213ab734b93e4f6f0167178124320ad2e634"
+    }
+  }
+}

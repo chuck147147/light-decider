@@ -1,0 +1,18 @@
+# Local run output and user-specific state
+logs/
+**/logs/
+workspace/codex_runs/
+**/workspace/codex_runs/
+__pycache__/
+**/__pycache__/
+.env
+.env.*
+!.env.example
+*.log
+.codex/
+**/.codex/
+config.local.*
+settings.local.*
+local_config.*
+.venv/
+venv/

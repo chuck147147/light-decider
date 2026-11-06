@@ -1,0 +1,27 @@
+{
+  "freeze_date": "2026-11-03",
+  "timezone": "Asia/Shanghai",
+  "purpose": "immutable_user_manual_gold_snapshot",
+  "records": 24,
+  "labels_locked": true,
+  "no_label_changes_after_freeze": true,
+  "files": [
+    {
+      "role": "workbook",
+      "source_path": "outputs/01a195cc-5dff-7e70-9e28-5298d354d8cf/light_decider_blind_label_sheet_v1.xlsx",
+      "frozen_path": "data/frozen_2026-11-03/light_decider_blind_label_sheet_v1_frozen_2026-11-03.xlsx",
+      "sha256": "288d88e23ee56244c284f6c02340d952a9a95ab146fc6641dd743d8344a6dcd9",
+      "byte_identical_to_source": true,
+      "read_only": true
+    },
+    {
+      "role": "human_labels",
+      "source_path": "data/light_decider_independent_blind_holdout_v1_human_labels.jsonl",
+      "frozen_path": "data/frozen_2026-11-03/light_decider_independent_blind_holdout_v1_human_labels_frozen_2026-11-03.jsonl",
+      "sha256": "f5b572f313921a14ff7820ea8188af7a7366226ba6a5a7ad83153fae666c0b12",
+      "byte_identical_to_source": true,
+      "read_only": true
+    }
+  ],
+  "change_policy": "Do not edit or overwrite these frozen files. Any later correction must be saved as a new dated version and retain this snapshot."
+}

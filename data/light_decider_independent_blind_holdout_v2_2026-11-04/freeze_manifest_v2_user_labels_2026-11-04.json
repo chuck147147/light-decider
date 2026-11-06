@@ -1,0 +1,79 @@
+{
+  "dataset": "light_decider_independent_blind_holdout_v2_user_labeled",
+  "freeze_date": "2026-11-04",
+  "timezone": "Asia/Shanghai",
+  "status": "frozen_user_labeled_preregistered_for_one_time_evaluation",
+  "records": 24,
+  "labels_locked": true,
+  "labels_changed": false,
+  "label_source_declaration": [
+    "本套标签由用户标注。",
+    "blind-v2-002、003、004 为用户独立标注；其余条目曾与助手逐条或成组讨论后由用户定版。",
+    "blind-v2-001–004 的两轴填“否/否”系格式不一致（纯提问不进两轴），不影响最终动作。"
+  ],
+  "source_file": {
+    "path": "C:<LOCAL_PATH>",
+    "sha256": "5f0cc3bacb9d84c34cf5ef7317034552d6c04915321603e9156af523f7f20b4f",
+    "byte_count": 16152
+  },
+  "frozen_file": {
+    "path": "data/light_decider_independent_blind_holdout_v2_2026-11-04/blind_holdout_v2_user_labels_frozen_2026-11-04.xlsx",
+    "sha256": "5f0cc3bacb9d84c34cf5ef7317034552d6c04915321603e9156af523f7f20b4f",
+    "byte_count": 16152,
+    "byte_identical_to_source": true,
+    "read_only": true
+  },
+  "prompt_integrity": {
+    "canonical_question_file_sha256": "64540d63b22aa9a1c833e2fcd51231dc0b972e287db2d5fb14243baa7e6d6729",
+    "all_ids_match": true,
+    "all_request_text_matches_canonical_question_file": true
+  },
+  "noncanonical_values_preserved": {
+    "description": "Literal '13' values in otherwise unused context/high-risk-domain/notes cells were retained in the frozen workbook; canonical frozen prompt text/context is used for inference, and only the four explicit high-risk domain names are included in the high-risk slice.",
+    "unknown_high_risk_values": []
+  },
+  "preregistered_evaluation": {
+    "registered_before_inference": true,
+    "scoring_runs_allowed": 1,
+    "metrics": [
+      "complete_confusion_matrix",
+      "per_class_precision_recall",
+      "weighted_cost",
+      "high_risk_error_count",
+      "policy_flip_list"
+    ],
+    "cost_weights": {
+      "clarify->decide": 10,
+      "clarify->codex_or_codex_special_action": 5,
+      "all_other_misclassifications": 1,
+      "correct": 0
+    },
+    "acceptance_line": {
+      "clarify_recall": "at least 6/7",
+      "clarify_recall_minimum_hits": 6,
+      "clarify_recall_support": 7,
+      "clarify_to_decide": 0,
+      "weighted_cost_total": "at most 10",
+      "weighted_cost_maximum": 10
+    },
+    "compare_against_existing_v1_report_only": true,
+    "v1_report": "data/training_round2_v1_2026-11-04/round2_training_report.md",
+    "v1_report_sha256": "1296b4111c3d6d41c8789f8831844a4b78d8138109bf33da01b0b9569ab407e6",
+    "v1_comparison_note": "The previously reported v1 routing_policy score includes development-set-derived policy components; do not treat it as uncontaminated generalization evidence.",
+    "evaluator_input_snapshot_path": "work/blind_v2_artifact/frozen_eval_inputs_v2.json",
+    "evaluator_input_snapshot_sha256": "830cf52895284e37ca18b720a5a22ff0acb368973aa0e81ddc84652b775aaf76"
+  },
+  "model_and_policy": {
+    "model_path": "artifacts/decisioner_round2_v1_2026-11-04.joblib",
+    "model_sha256": "f2e1dc659d1d9a78c3136401ba2d987e80bd836a85005530bf75e53510d2dc25",
+    "training_dataset_version_sha256": "897d1266b0f2a1d7177d57150360c81c11dea70b900f5ab412bd2ea048f1cb16",
+    "train_sha256": "c05e18aaa2f393093a7879ffa43b3b0063e20e4edb553b8a12422b271242c3ab",
+    "dev_sha256": "cf03fa1583713dff2a600b5df941dc0b6c358fc4bc375ef066f45fc5f77eec82",
+    "routing_policy_path": "light_decider/routing_policy.py",
+    "routing_policy_sha256": "e1a1107aaf29ff75482ae1ab581d9f233c19d7763bef5ceb868bd468b48e5ae3",
+    "v1_frozen_gold_sha256": "f5b572f313921a14ff7820ea8188af7a7366226ba6a5a7ad83153fae666c0b12",
+    "automatic_dispatch_allowed": false
+  },
+  "training_prohibition": "v2 user-labeled rows must not be added to training data.",
+  "post_evaluation_policy": "Do not modify labels, model parameters, or routing rules based on evaluation results; stop and wait for user decision before any such modification."
+}
